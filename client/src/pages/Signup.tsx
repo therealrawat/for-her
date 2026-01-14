@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, Shield, Lock } from 'lucide-react';
+import { UserPlus, Shield } from 'lucide-react';
 
 const Signup = () => {
   const [fullName, setFullName] = useState('');
@@ -11,7 +11,6 @@ const Signup = () => {
   const [birthYear, setBirthYear] = useState(new Date().getFullYear() - 25);
   const [contraceptiveUse, setContraceptiveUse] = useState<'None' | 'Birth Control Pill' | 'IUD' | 'Hormonal Shots' | 'Other'>('None');
   const [primaryGoal, setPrimaryGoal] = useState<'General Health' | 'Trying to Conceive' | 'Trying to Avoid Pregnancy'>('General Health');
-  const [isAnonymous, setIsAnonymous] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -29,13 +28,12 @@ const Signup = () => {
     try {
       await signup(
         fullName,
-        isAnonymous ? undefined : email,
-        isAnonymous ? undefined : password,
+        email,
+        password,
         avgCycleLength,
         birthYear,
         contraceptiveUse,
         primaryGoal,
-        isAnonymous
       );
       navigate('/dashboard');
     } catch (err: any) {
@@ -110,7 +108,7 @@ const Signup = () => {
               />
             </div>
 
-            {!isAnonymous && (
+            {(
               <>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">

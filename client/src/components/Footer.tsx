@@ -1,5 +1,4 @@
 export const Footer = () => {
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="mt-12 border-t border-gray-200 text-center text-gray-600 text-sm">

@@ -5,7 +5,7 @@ import api from '../utils/api';
 import { Settings as SettingsIcon, Save, ArrowLeft, User } from 'lucide-react';
 
 const Settings = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);

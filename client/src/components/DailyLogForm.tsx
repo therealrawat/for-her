@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import api from '../utils/api';
 import type { DailyLog } from '../types';
-import { Calendar, Activity, Heart, Coffee, Moon } from 'lucide-react';
+import { Calendar, Activity, Heart, Coffee } from 'lucide-react';
 
 interface DailyLogFormProps {
   date?: Date;
@@ -32,7 +32,12 @@ const DailyLogForm = ({ date = new Date(), onLogSaved, existingLog }: DailyLogFo
     if (existingLog) {
       setFlowIntensity(existingLog.flowIntensity);
       setPhysicalSymptoms(existingLog.physicalSymptoms || []);
-      setLifestyleFactors(existingLog.lifestyleFactors || {});
+      setLifestyleFactors({
+        highStress: existingLog.lifestyleFactors?.highStress ?? false,
+        travel: existingLog.lifestyleFactors?.travel ?? false,
+        poorSleep: existingLog.lifestyleFactors?.poorSleep ?? false,
+        alcohol: existingLog.lifestyleFactors?.alcohol ?? false,
+      });
       setBiometricData({
         weight: existingLog.biometricData?.weight?.toString() || '',
         basalBodyTemp: existingLog.biometricData?.basalBodyTemp?.toString() || '',
