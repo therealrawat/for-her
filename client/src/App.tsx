@@ -7,6 +7,7 @@ import Settings from './pages/Settings';
 import AdminUsers from './pages/AdminUsers';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Footer } from './components/Footer';
+import './App.css';
 
 const AppRoutes = () => {
   const { user } = useAuth();

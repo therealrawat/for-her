@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import type { User } from '../types';
 import { Users, Mail, Calendar } from 'lucide-react';
+import { AppHeader } from '../components/AppHeader';
 
 const AdminUsers = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,70 +41,78 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-              <Users className="w-7 h-7 text-lavender-600" />
-              <span>User Overview</span>
-            </h1>
-            <p className="text-gray-600 mt-1 text-sm">
-              Super admin only · Track growth of registered users for future engagement.
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">Total users</p>
-            <p className="text-2xl font-semibold text-lavender-700">{users.length}</p>
-          </div>
+    <div className="app-page">
+      <div className="app-container">
+        <AppHeader
+          title="Users"
+          subtitle="Super admin only · Track growth for future engagement."
+          backTo="/dashboard"
+          right={
+            <button
+              className="btn-outline"
+              onClick={() => navigate('/dashboard')}
+              title="Back to dashboard"
+              aria-label="Back to dashboard"
+            >
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </button>
+          }
+        />
+
+        <div className="mb-6 surface p-4 flex items-center justify-between">
+          <div className="text-sm text-gray-600">Total users</div>
+          <div className="text-2xl font-semibold text-lavender-700">{users.length}</div>
         </div>
 
         {loading && (
           <div className="card">
-            <p className="text-lavender-600">Loading users...</p>
+            <p className="text-lavender-700 font-medium">Loading users...</p>
           </div>
         )}
 
         {error && !loading && (
-          <div className="card border-red-200 bg-red-50 text-red-700">
-            <p className="text-sm">{error}</p>
+          <div className="surface p-4 border-red-200 bg-red-50/70 text-red-700">
+            <p className="text-sm font-medium">{error}</p>
           </div>
         )}
 
         {!loading && !error && (
-          <div className="card overflow-x-auto">
+          <div className="surface-strong p-0 overflow-x-auto">
             {users.length === 0 ? (
-              <p className="text-sm text-gray-500">No users registered yet.</p>
+              <div className="p-6">
+                <p className="text-sm text-gray-500">No users registered yet.</p>
+              </div>
             ) : (
               <table className="min-w-full text-left text-sm">
-                <thead>
+                <thead className="bg-gray-50/60">
                   <tr className="border-b border-gray-100">
-                    <th className="py-2 pr-4 font-semibold text-gray-600">Name</th>
-                    <th className="py-2 pr-4 font-semibold text-gray-600">
+                    <th className="py-3 px-4 font-semibold text-gray-700">Name</th>
+                    <th className="py-3 px-4 font-semibold text-gray-700">
                       <span className="inline-flex items-center gap-1">
                         <Mail className="w-3 h-3" /> Email
                       </span>
                     </th>
-                    <th className="py-2 pr-4 font-semibold text-gray-600">Role</th>
-                    <th className="py-2 pr-4 font-semibold text-gray-600">
+                    <th className="py-3 px-4 font-semibold text-gray-700">Role</th>
+                    <th className="py-3 px-4 font-semibold text-gray-700">
                       <span className="inline-flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> Joined
                       </span>
                     </th>
-                    <th className="py-2 pr-4 font-semibold text-gray-600">Primary goal</th>
-                    <th className="py-2 pr-4 font-semibold text-gray-600">Contraceptive</th>
+                    <th className="py-3 px-4 font-semibold text-gray-700">Primary goal</th>
+                    <th className="py-3 px-4 font-semibold text-gray-700">Contraceptive</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((u) => (
-                    <tr key={u._id} className="border-b border-gray-50 last:border-0">
-                      <td className="py-2 pr-4">
+                    <tr key={u._id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
+                      <td className="py-3 px-4">
                         <div className="font-medium text-gray-800">{u.fullName}</div>
                       </td>
-                      <td className="py-2 pr-4 text-gray-700">
+                      <td className="py-3 px-4 text-gray-700">
                         {u.email || <span className="text-xs text-gray-400">Anonymous</span>}
                       </td>
-                      <td className="py-2 pr-4">
+                      <td className="py-3 px-4">
                         <span
                           className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
                             u.role === 'admin'
@@ -113,7 +123,7 @@ const AdminUsers = () => {
                           {u.role || 'user'}
                         </span>
                       </td>
-                      <td className="py-2 pr-4 text-gray-700">
+                      <td className="py-3 px-4 text-gray-700">
                         {/* createdAt is present on the backend model; cast to any to avoid strict typing here */}
                         {/*
                           We defensively handle absence to avoid runtime issues if older records lack this field client-side.
@@ -124,8 +134,8 @@ const AdminUsers = () => {
                             : '—'}
                         </span>
                       </td>
-                      <td className="py-2 pr-4 text-gray-700">{u.primaryGoal}</td>
-                      <td className="py-2 pr-4 text-gray-700 text-xs">{u.contraceptiveUse}</td>
+                      <td className="py-3 px-4 text-gray-700">{u.primaryGoal}</td>
+                      <td className="py-3 px-4 text-gray-700 text-xs">{u.contraceptiveUse}</td>
                     </tr>
                   ))}
                 </tbody>

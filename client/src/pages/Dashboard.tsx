@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { differenceInDays, addDays, format, subDays } from 'date-fns';
 import api from '../utils/api';
 import type { Cycle, CycleAnalysis, DailyLog } from '../types';
-import { Calendar, Plus, Moon, Heart, Settings, LogOut, AlertCircle, Shield, FileText, Users } from 'lucide-react';
+import { Calendar, Plus, Moon, Heart, AlertCircle, Shield, FileText, Users } from 'lucide-react';
 import CycleLogForm from '../components/CycleLogForm';
 import CycleList from '../components/CycleList';
 import DailyLogForm from '../components/DailyLogForm';
+import { AppHeader } from '../components/AppHeader';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -151,50 +152,35 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lavender-600 text-lg">Loading...</div>
+        <div className="text-lavender-700 text-lg font-medium">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">4Her - Period Tracker</h1>
-            <p className="text-gray-600 mt-1">Welcome back, {user?.fullName || user?.email}</p>
-          </div>
-          <div className="flex gap-2">
-            {user?.role === 'admin' && (
+    <div className="app-page">
+      <div className="app-container">
+        <AppHeader
+          title="Dashboard"
+          subtitle={`Welcome back, ${user?.fullName || user?.email || 'friend'}`}
+          right={
+            user?.role === 'admin' ? (
               <button
                 onClick={() => navigate('/admin/users')}
-                className="p-2 text-gray-600 hover:text-lavender-600 transition-colors"
-                title="View all users (admin)"
+                className="btn-outline"
+                title="Admin: Users"
+                aria-label="Admin: Users"
               >
-                <Users className="w-5 h-5" />
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">Users</span>
               </button>
-            )}
-            <button
-              onClick={() => navigate('/settings')}
-              className="p-2 text-gray-600 hover:text-lavender-600 transition-colors"
-              title="Settings"
-            >
-              <Settings className="w-5 h-5" />
-            </button>
-            <button
-              onClick={logout}
-              className="p-2 text-gray-600 hover:text-red-600 transition-colors"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+            ) : null
+          }
+        />
 
         {/* Cycle Variability Insight */}
         {cycleAnalysis?.hasDeviation && cycleAnalysis.insight && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="mb-6 surface p-4 border-amber-200 bg-amber-50/70">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
@@ -213,9 +199,7 @@ const Dashboard = () => {
               <div className="p-2 bg-lavender-100 rounded-lg">
                 <Calendar className="w-5 h-5 text-lavender-600" />
               </div>
-              <h3 className="font-semibold text-gray-700">
-                Next Period
-              </h3>
+              <h3 className="font-semibold text-gray-800">Next Period</h3>
             </div>
             {nextPeriod ? (
               <div>
@@ -247,9 +231,7 @@ const Dashboard = () => {
                 <div className="p-2 bg-gray-100 rounded-lg">
                   <Heart className="w-5 h-5 text-gray-600" />
                 </div>
-                <h3 className="font-semibold text-gray-700">
-                  Cycle Status
-                </h3>
+                <h3 className="font-semibold text-gray-800">Cycle Status</h3>
               </div>
               <div>
                 <p className="text-sm text-gray-600">
@@ -282,9 +264,7 @@ const Dashboard = () => {
                         : 'text-lavender-600'
                     }`} />
                   </div>
-                  <h3 className="font-semibold text-gray-700">
-                    {getFertilityWindowTitle()}
-                  </h3>
+                  <h3 className="font-semibold text-gray-800">{getFertilityWindowTitle()}</h3>
                 </div>
                 {user?.primaryGoal === 'General Health' && (
                   <button
@@ -293,7 +273,7 @@ const Dashboard = () => {
                       setShowOvulationWindow(newValue);
                       localStorage.setItem('showOvulationWindow', String(newValue));
                     }}
-                    className="text-xs text-lavender-600 hover:text-lavender-700"
+                    className="text-xs font-medium text-lavender-700 hover:text-lavender-800"
                     title="Toggle ovulation window display"
                   >
                     {showOvulationWindow ? 'Hide' : 'Show'}
@@ -337,9 +317,7 @@ const Dashboard = () => {
               <div className="p-2 bg-purple-100 rounded-lg">
                 <Moon className="w-5 h-5 text-purple-600" />
               </div>
-              <h3 className="font-semibold text-gray-700">
-                Periods Logged
-              </h3>
+              <h3 className="font-semibold text-gray-800">Periods Logged</h3>
             </div>
             <div className="text-3xl font-bold text-purple-600">{cycles.length}</div>
             <p className="text-xs text-gray-500 mt-2">Total entries</p>
@@ -352,13 +330,13 @@ const Dashboard = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex flex-wrap gap-3 mb-6">
           <button
             onClick={() => {
               setShowForm(!showForm);
               setShowDailyLog(false);
             }}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary"
           >
             <Plus className="w-5 h-5" />
             {showForm ? 'Cancel' : 'Log New Period'}
@@ -369,7 +347,7 @@ const Dashboard = () => {
               setShowForm(false);
               setSelectedDate(new Date());
             }}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary"
           >
             <FileText className="w-5 h-5" />
             {showDailyLog ? 'Cancel' : 'Daily Log'}
@@ -403,7 +381,7 @@ const Dashboard = () => {
         
 
         {/* Privacy Statement */}
-        <div className="mt-6 p-4 bg-lavender-50 border border-lavender-200 rounded-lg">
+        <div className="mt-6 surface p-4 bg-lavender-50/70 border-lavender-200">
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-lavender-600 mt-0.5 flex-shrink-0" />
             <div className="text-sm text-gray-700">

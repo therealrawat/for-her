@@ -40,9 +40,13 @@ const CycleList = ({ cycles, onCycleDeleted }: CycleListProps) => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Period History
-      </h2>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Period history</h2>
+          <p className="text-sm text-gray-600">Your logged cycles, symptoms, and mood.</p>
+        </div>
+        <div className="text-xs text-gray-500 shrink-0">{cycles.length} entries</div>
+      </div>
       {cycles.map((cycle) => {
         const duration = differenceInDays(new Date(cycle.endDate), new Date(cycle.startDate)) + 1;
         return (
