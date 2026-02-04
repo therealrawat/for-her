@@ -5,6 +5,7 @@ import api from '../utils/api';
 import type { User } from '../types';
 import { Users, Mail, Calendar } from 'lucide-react';
 import { AppHeader } from '../components/AppHeader';
+import { Loader } from '../components/Loader';
 
 const AdminUsers = () => {
   const { user } = useAuth();
@@ -67,7 +68,7 @@ const AdminUsers = () => {
 
         {loading && (
           <div className="card">
-            <p className="text-lavender-700 font-medium">Loading users...</p>
+            <Loader message="Loading users..." size="md" />
           </div>
         )}
 

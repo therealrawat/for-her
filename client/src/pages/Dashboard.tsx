@@ -9,6 +9,7 @@ import CycleLogForm from '../components/CycleLogForm';
 import CycleList from '../components/CycleList';
 import DailyLogForm from '../components/DailyLogForm';
 import { AppHeader } from '../components/AppHeader';
+import { Loader } from '../components/Loader';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -150,11 +151,7 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lavender-700 text-lg font-medium">Loading...</div>
-      </div>
-    );
+    return <Loader message="Loading your cycles..." size="lg" fullScreen />;
   }
 
   return (

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { Save, User } from 'lucide-react';
 import { AppHeader } from '../components/AppHeader';
+import { Loader } from '../components/Loader';
 
 const Settings = () => {
   const { logout } = useAuth();
@@ -84,11 +85,7 @@ const Settings = () => {
   const maxYear = currentYear - 12;
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lavender-700 text-lg font-medium">Loading...</div>
-      </div>
-    );
+    return <Loader message="Loading your settings..." size="lg" fullScreen />;
   }
 
   return (
