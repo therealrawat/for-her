@@ -11,7 +11,7 @@ import DailyLogForm from '../components/DailyLogForm';
 import { AppHeader } from '../components/AppHeader';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [cycles, setCycles] = useState<Cycle[]>([]);
   const [cycleAnalysis, setCycleAnalysis] = useState<CycleAnalysis | null>(null);
