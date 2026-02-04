@@ -1,5 +1,7 @@
 import express from 'express';
 import User from '../models/User.js';
+import Cycle from '../models/Cycle.js';
+import DailyLog from '../models/DailyLog.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -68,6 +70,34 @@ router.get('/all', async (req, res) => {
 
     const users = await User.find().select('-password');
     res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @route   DELETE /api/user/account
+// @desc    Delete user account and all associated data permanently
+// @access  Private
+router.delete('/account', async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Prevent admin accounts from being deleted (optional safety measure)
+    const user = await User.findById(userId);
+    if (user && user.role === 'admin') {
+      return res.status(403).json({ message: 'Admin accounts cannot be deleted' });
+    }
+
+    // Delete all cycles associated with the user
+    await Cycle.deleteMany({ userId });
+
+    // Delete all daily logs associated with the user
+    await DailyLog.deleteMany({ userId });
+
+    // Delete the user account
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: 'Account and all associated data deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

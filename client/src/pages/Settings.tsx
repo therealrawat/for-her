@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
-import { Save, User } from 'lucide-react';
+import { Save, User, Trash2 } from 'lucide-react';
 import { AppHeader } from '../components/AppHeader';
 import { Loader } from '../components/Loader';
+import { DeleteAccountDialog } from '../components/DeleteAccountDialog';
 
 const Settings = () => {
-  const { logout } = useAuth();
+  const { logout, deleteAccount, user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -264,19 +266,47 @@ const Settings = () => {
         </div>
 
         {/* Account Actions */}
-        <div className="surface p-6 mt-6 flex items-center justify-between">
-          <div>
-            <h3 className="text-base font-semibold text-gray-900">Account</h3>
-            <p className="text-sm text-gray-600">Sign out from this device.</p>
+        <div className="surface p-6 mt-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-semibold text-gray-900">Account</h3>
+              <p className="text-sm text-gray-600">Sign out from this device.</p>
+            </div>
+            <button
+              onClick={logout}
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-red-50 text-red-700 hover:bg-red-100 border border-red-100 transition-colors"
+            >
+              Logout
+            </button>
           </div>
-          <button
-            onClick={logout}
-            className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-red-50 text-red-700 hover:bg-red-100 border border-red-100 transition-colors"
-          >
-            Logout
-          </button>
+
+          <div className="border-t border-gray-200 pt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">Danger Zone</h3>
+                <p className="text-sm text-gray-600">
+                  Permanently delete your account and all associated data.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDeleteDialog(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Account
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Delete Account Dialog */}
+      <DeleteAccountDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={deleteAccount}
+        userName={user?.fullName}
+      />
     </div>
   );
 };

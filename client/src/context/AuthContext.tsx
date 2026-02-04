@@ -17,6 +17,7 @@ interface AuthContextType {
     isAnonymous?: boolean
   ) => Promise<void>;
   logout: () => void;
+  deleteAccount: () => Promise<void>;
   loading: boolean;
 }
 
@@ -84,8 +85,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  const deleteAccount = async () => {
+    try {
+      await api.delete('/user/account');
+      // Clear local storage and state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, deleteAccount, loading }}>
       {children}
     </AuthContext.Provider>
   );
