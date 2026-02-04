@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { differenceInDays, addDays, format, subDays } from 'date-fns';
 import api from '../utils/api';
 import type { Cycle, CycleAnalysis, DailyLog } from '../types';
-import { Calendar, Plus, Moon, Heart, Settings, LogOut, AlertCircle, Shield, FileText } from 'lucide-react';
+import { Calendar, Plus, Moon, Heart, Settings, LogOut, AlertCircle, Shield, FileText, Users } from 'lucide-react';
 import CycleLogForm from '../components/CycleLogForm';
 import CycleList from '../components/CycleList';
 import DailyLogForm from '../components/DailyLogForm';
@@ -166,6 +166,15 @@ const Dashboard = () => {
             <p className="text-gray-600 mt-1">Welcome back, {user?.fullName || user?.email}</p>
           </div>
           <div className="flex gap-2">
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => navigate('/admin/users')}
+                className="p-2 text-gray-600 hover:text-lavender-600 transition-colors"
+                title="View all users (admin)"
+              >
+                <Users className="w-5 h-5" />
+              </button>
+            )}
             <button
               onClick={() => navigate('/settings')}
               className="p-2 text-gray-600 hover:text-lavender-600 transition-colors"

@@ -7,6 +7,7 @@ export interface User {
   contraceptiveUse: 'None' | 'Birth Control Pill' | 'IUD' | 'Hormonal Shots' | 'Other';
   primaryGoal: 'General Health' | 'Trying to Conceive' | 'Trying to Avoid Pregnancy';
   isAnonymous?: boolean;
+  role?: 'user' | 'admin';
 }
 
 export interface Cycle {
@@ -66,6 +67,7 @@ export interface AuthResponse {
   contraceptiveUse: 'None' | 'Birth Control Pill' | 'IUD' | 'Hormonal Shots' | 'Other';
   primaryGoal: 'General Health' | 'Trying to Conceive' | 'Trying to Avoid Pregnancy';
   isAnonymous?: boolean;
+  role?: 'user' | 'admin';
   token: string;
 }
 

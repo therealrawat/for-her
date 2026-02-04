@@ -57,5 +57,21 @@ router.put('/profile', async (req, res) => {
   }
 });
 
+// @route   GET /api/user/all
+// @desc    Get list of all users (admin only)
+// @access  Private/Admin
+router.get('/all', async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized as admin' });
+    }
+
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
 

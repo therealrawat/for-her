@@ -5,7 +5,7 @@ import type { User, AuthResponse } from '../types';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   signup: (
     fullName: string,
     email: string | undefined,
@@ -44,10 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     const response = await api.post<AuthResponse>('/auth/login', { email, password });
     const { token, ...userData } = response.data;
-    
+
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    setUser(userData as User);
+    return userData as User;
   };
 
   const signup = async (

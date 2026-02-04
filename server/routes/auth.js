@@ -57,6 +57,7 @@ router.post('/signup', async (req, res) => {
         contraceptiveUse: user.contraceptiveUse,
         primaryGoal: user.primaryGoal,
         isAnonymous: user.isAnonymous,
+        role: user.role,
         token: generateToken(user._id)
       });
     } else {
@@ -87,6 +88,7 @@ router.post('/login', async (req, res) => {
         contraceptiveUse: user.contraceptiveUse,
         primaryGoal: user.primaryGoal,
         isAnonymous: user.isAnonymous,
+        role: user.role,
         token: generateToken(user._id)
       });
     } else {
