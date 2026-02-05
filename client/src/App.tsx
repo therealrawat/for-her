@@ -6,7 +6,6 @@ import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import AdminUsers from './pages/AdminUsers';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { Footer } from './components/Footer';
 import './App.css';
 
 const AppRoutes = () => {
@@ -59,7 +58,6 @@ function App() {
           <div className="flex-grow">
             <AppRoutes />
           </div>
-          <Footer />
         </div>
       </Router>
     </AuthProvider>

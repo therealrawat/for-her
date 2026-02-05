@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn } from 'lucide-react';
 import heroIllustration from '../assets/pr-light.svg';
 
 const Login = () => {
@@ -38,8 +37,10 @@ const Login = () => {
           {/* Form column (left on desktop) */}
           <div className="px-6 py-8 sm:px-10 sm:py-12 flex flex-col justify-center">
             <div className="mb-8">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-lavender-100 rounded-2xl mb-5">
-                <LogIn className="w-7 h-7 text-lavender-600" />
+              <div className="mb-5">
+                <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-lavender-600 via-lavender-500 to-teal-500 bg-clip-text text-transparent">
+                  4Her
+                </span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
                 Welcome back
