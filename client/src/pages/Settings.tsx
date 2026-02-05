@@ -91,8 +91,8 @@ const Settings = () => {
   }
 
   return (
-    <div className="app-page">
-      <div className="app-container">
+    <div className="app-page relative">
+      <div className="app-container mb-6">
         <AppHeader
           title="Settings"
           subtitle="Keep your health profile up to date for better predictions."
@@ -306,6 +306,11 @@ const Settings = () => {
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={deleteAccount}
         userName={user?.fullName}
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 opacity-85 bg-gradient-to-br from-teal-600 via-teal-500 to-lavender-500 text-white order-1"
       />
     </div>
   );

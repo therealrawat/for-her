@@ -79,7 +79,7 @@ const Dashboard = () => {
     const lastStartDate = new Date(lastCycle.startDate);
     const avgCycleLength = user?.avgCycleLength || 28;
     const nextPeriodDate = addDays(lastStartDate, avgCycleLength);
-    
+
     return {
       date: nextPeriodDate,
       daysUntil: differenceInDays(nextPeriodDate, new Date())
@@ -107,22 +107,22 @@ const Dashboard = () => {
 
   const shouldShowFertilityWindow = () => {
     if (!user || !ovulationWindow) return false;
-    
+
     // Don't show window if on hormonal contraception (show message instead)
     if (user.contraceptiveUse === 'Birth Control Pill' || user.contraceptiveUse === 'Hormonal Shots') {
       return false;
     }
-    
+
     // Always show for "Trying to Conceive" or "Trying to Avoid Pregnancy"
     if (user.primaryGoal === 'Trying to Conceive' || user.primaryGoal === 'Trying to Avoid Pregnancy') {
       return true;
     }
-    
+
     // For "General Health", show only if user has toggled it on
     if (user.primaryGoal === 'General Health') {
       return showOvulationWindow;
     }
-    
+
     return false;
   };
 
@@ -155,7 +155,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="app-page">
+    <div className="app-page relative">
       <div className="app-container">
         <AppHeader
           title="Dashboard"
@@ -246,20 +246,18 @@ const Dashboard = () => {
             <div className="card">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    user?.primaryGoal === 'Trying to Conceive' 
-                      ? 'bg-teal-100' 
-                      : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                  <div className={`p-2 rounded-lg ${user?.primaryGoal === 'Trying to Conceive'
+                    ? 'bg-teal-100'
+                    : user?.primaryGoal === 'Trying to Avoid Pregnancy'
                       ? 'bg-amber-100'
                       : 'bg-lavender-100'
-                  }`}>
-                    <Heart className={`w-5 h-5 ${
-                      user?.primaryGoal === 'Trying to Conceive' 
-                        ? 'text-teal-600' 
-                        : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                    }`}>
+                    <Heart className={`w-5 h-5 ${user?.primaryGoal === 'Trying to Conceive'
+                      ? 'text-teal-600'
+                      : user?.primaryGoal === 'Trying to Avoid Pregnancy'
                         ? 'text-amber-600'
                         : 'text-lavender-600'
-                    }`} />
+                      }`} />
                   </div>
                   <h3 className="font-semibold text-gray-800">{getFertilityWindowTitle()}</h3>
                 </div>
@@ -279,15 +277,14 @@ const Dashboard = () => {
               </div>
               <div>
                 <div
-                  className={`text-lg font-semibold mb-1 ${
-                    ovulationWindow.isActive 
-                      ? user?.primaryGoal === 'Trying to Conceive'
-                        ? 'text-teal-600'
-                        : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                  className={`text-lg font-semibold mb-1 ${ovulationWindow.isActive
+                    ? user?.primaryGoal === 'Trying to Conceive'
+                      ? 'text-teal-600'
+                      : user?.primaryGoal === 'Trying to Avoid Pregnancy'
                         ? 'text-amber-600'
                         : 'text-lavender-600'
-                      : 'text-gray-600'
-                  }`}
+                    : 'text-gray-600'
+                    }`}
                 >
                   {ovulationWindow.isActive ? 'Active Now' : 'Upcoming'}
                 </div>
@@ -295,13 +292,12 @@ const Dashboard = () => {
                   {format(ovulationWindow.start, 'MMM dd')} -{' '}
                   {format(ovulationWindow.end, 'MMM dd')}
                 </p>
-                <p className={`text-xs mt-1 font-medium ${
-                  user?.primaryGoal === 'Trying to Conceive'
-                    ? 'text-teal-600'
-                    : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                <p className={`text-xs mt-1 font-medium ${user?.primaryGoal === 'Trying to Conceive'
+                  ? 'text-teal-600'
+                  : user?.primaryGoal === 'Trying to Avoid Pregnancy'
                     ? 'text-amber-600'
                     : 'text-lavender-600'
-                }`}>
+                  }`}>
                   {getFertilityWindowMessage()}
                 </p>
               </div>
@@ -375,10 +371,10 @@ const Dashboard = () => {
         {/* Cycle List */}
         <CycleList cycles={cycles} onCycleDeleted={fetchCycles} />
 
-        
+
 
         {/* Privacy Statement */}
-        <div className="mt-6 surface p-4 bg-lavender-50/70 border-lavender-200">
+        <div className="mt-6 mb-6 surface p-4 bg-lavender-50/70 border-lavender-200">
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-lavender-600 mt-0.5 flex-shrink-0" />
             <div className="text-sm text-gray-700">
@@ -387,8 +383,11 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
       </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 opacity-85 bg-gradient-to-br from-lavender-600 via-lavender-500 to-teal-500 text-white"
+      />
     </div>
   );
 };
