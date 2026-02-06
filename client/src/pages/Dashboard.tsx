@@ -151,7 +151,7 @@ const Dashboard = () => {
     <div className="app-page relative">
       <div className="app-container">
         <AppHeader
-          title="Dashboard"
+          title="4HER"
           subtitle={`Welcome back, ${user?.fullName || user?.email || 'friend'}`}
           right={
             user?.role === 'admin' ? (
