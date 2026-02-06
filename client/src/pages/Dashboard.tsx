@@ -4,12 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { differenceInDays, addDays, format, subDays } from 'date-fns';
 import api from '../utils/api';
 import type { Cycle, CycleAnalysis, DailyLog } from '../types';
-import { Calendar, Plus, Moon, Heart, AlertCircle, Shield, FileText, Users } from 'lucide-react';
+import { Calendar, Plus, Heart, AlertCircle, Shield, FileText, Users, Activity } from 'lucide-react';
 import CycleLogForm from '../components/CycleLogForm';
-import CycleList from '../components/CycleList';
 import DailyLogForm from '../components/DailyLogForm';
+import CalendarView from '../components/CalendarView';
+import CycleInsights from '../components/CycleInsights';
+import RecentEntries from '../components/RecentEntries';
 import { AppHeader } from '../components/AppHeader';
 import { Loader } from '../components/Loader';
+
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -126,9 +129,7 @@ const Dashboard = () => {
     return false;
   };
 
-  const isOnHormonalBC = () => {
-    return user?.contraceptiveUse === 'Birth Control Pill' || user?.contraceptiveUse === 'Hormonal Shots';
-  };
+
 
   const getFertilityWindowTitle = () => {
     if (user?.primaryGoal === 'Trying to Conceive') {
@@ -140,15 +141,7 @@ const Dashboard = () => {
     return 'Your Ovulation Window';
   };
 
-  const getFertilityWindowMessage = () => {
-    if (user?.primaryGoal === 'Trying to Conceive') {
-      return 'Peak Fertility';
-    }
-    if (user?.primaryGoal === 'Trying to Avoid Pregnancy') {
-      return 'High Risk - Use Protection';
-    }
-    return 'Your Ovulation Window';
-  };
+
 
   if (loading) {
     return <Loader message="Loading your cycles..." size="lg" fullScreen />;
@@ -200,125 +193,79 @@ const Dashboard = () => {
             </div>
             {nextPeriod ? (
               <div>
-                {nextPeriod.daysUntil === 0 ? (
-                  <div className="text-3xl font-bold text-lavender-600 mb-1">Today</div>
-                ) : (
-                  <>
-                    <div className="text-3xl font-bold text-lavender-600 mb-1">
-                      {nextPeriod.daysUntil}
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {nextPeriod.daysUntil === 1 ? 'day' : 'days'}
-                    </p>
-                  </>
-                )}
-                <p className="text-xs text-gray-500 mt-2">
-                  {format(nextPeriod.date, 'MMM dd, yyyy')}
+                <div className="text-2xl font-bold text-lavender-600 mb-1">
+                  {format(nextPeriod.date, 'MMM dd')}
+                </div>
+                <p className="text-sm text-gray-600">
+                  {nextPeriod.daysUntil === 0
+                    ? 'Expected today'
+                    : nextPeriod.daysUntil === 1
+                      ? 'Expected in 1 day'
+                      : `Expected in ${nextPeriod.daysUntil} days`}
                 </p>
               </div>
             ) : (
-              <p className="text-gray-500">Log your first cycle to see predictions</p>
+              <p className="text-gray-500 text-sm">Log your first cycle</p>
             )}
           </div>
 
-          {/* Hormonal BC Message */}
-          {isOnHormonalBC() && (
-            <div className="card">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-gray-100 rounded-lg">
-                  <Heart className="w-5 h-5 text-gray-600" />
-                </div>
-                <h3 className="font-semibold text-gray-800">Cycle Status</h3>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  Cycle suppressed by medication
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Ovulation tracking not applicable
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Ovulation Window Card */}
+          {/* Peak Fertility Card (if applicable) */}
           {shouldShowFertilityWindow() && ovulationWindow && (
             <div className="card">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${user?.primaryGoal === 'Trying to Conceive'
-                    ? 'bg-teal-100'
+              <div className="flex items-center gap-3 mb-2">
+                <div className={`p-2 rounded-lg ${user?.primaryGoal === 'Trying to Conceive'
+                  ? 'bg-teal-100'
+                  : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                    ? 'bg-amber-100'
+                    : 'bg-lavender-100'
+                  }`}>
+                  <Heart className={`w-5 h-5 ${user?.primaryGoal === 'Trying to Conceive'
+                    ? 'text-teal-600'
                     : user?.primaryGoal === 'Trying to Avoid Pregnancy'
-                      ? 'bg-amber-100'
-                      : 'bg-lavender-100'
-                    }`}>
-                    <Heart className={`w-5 h-5 ${user?.primaryGoal === 'Trying to Conceive'
-                      ? 'text-teal-600'
-                      : user?.primaryGoal === 'Trying to Avoid Pregnancy'
-                        ? 'text-amber-600'
-                        : 'text-lavender-600'
-                      }`} />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">{getFertilityWindowTitle()}</h3>
+                      ? 'text-amber-600'
+                      : 'text-lavender-600'
+                    }`} />
                 </div>
-                {user?.primaryGoal === 'General Health' && (
-                  <button
-                    onClick={() => {
-                      const newValue = !showOvulationWindow;
-                      setShowOvulationWindow(newValue);
-                      localStorage.setItem('showOvulationWindow', String(newValue));
-                    }}
-                    className="text-xs font-medium text-lavender-700 hover:text-lavender-800"
-                    title="Toggle ovulation window display"
-                  >
-                    {showOvulationWindow ? 'Hide' : 'Show'}
-                  </button>
-                )}
+                <h3 className="font-semibold text-gray-800">{getFertilityWindowTitle()}</h3>
               </div>
               <div>
-                <div
-                  className={`text-lg font-semibold mb-1 ${ovulationWindow.isActive
-                    ? user?.primaryGoal === 'Trying to Conceive'
-                      ? 'text-teal-600'
-                      : user?.primaryGoal === 'Trying to Avoid Pregnancy'
-                        ? 'text-amber-600'
-                        : 'text-lavender-600'
-                    : 'text-gray-600'
-                    }`}
-                >
-                  {ovulationWindow.isActive ? 'Active Now' : 'Upcoming'}
-                </div>
-                <p className="text-xs text-gray-600">
-                  {format(ovulationWindow.start, 'MMM dd')} -{' '}
-                  {format(ovulationWindow.end, 'MMM dd')}
-                </p>
-                <p className={`text-xs mt-1 font-medium ${user?.primaryGoal === 'Trying to Conceive'
-                  ? 'text-teal-600'
-                  : user?.primaryGoal === 'Trying to Avoid Pregnancy'
-                    ? 'text-amber-600'
-                    : 'text-lavender-600'
+                <div className={`text-2xl font-bold mb-1 ${ovulationWindow.isActive
+                  ? user?.primaryGoal === 'Trying to Conceive'
+                    ? 'text-teal-600'
+                    : user?.primaryGoal === 'Trying to Avoid Pregnancy'
+                      ? 'text-amber-600'
+                      : 'text-lavender-600'
+                  : 'text-gray-600'
                   }`}>
-                  {getFertilityWindowMessage()}
+                  {ovulationWindow.isActive ? 'Active' : 'Upcoming'}
+                </div>
+                <p className="text-sm text-gray-600">
+                  {format(ovulationWindow.start, 'MMM dd')} - {format(ovulationWindow.end, 'MMM dd')}
                 </p>
               </div>
             </div>
           )}
 
-          {/* Cycle Count Card */}
+          {/* Cycle Health Card */}
           <div className="card">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <Moon className="w-5 h-5 text-purple-600" />
+                <Activity className="w-5 h-5 text-purple-600" />
               </div>
-              <h3 className="font-semibold text-gray-800">Periods Logged</h3>
+              <h3 className="font-semibold text-gray-800">Cycle Health</h3>
             </div>
-            <div className="text-3xl font-bold text-purple-600">{cycles.length}</div>
-            <p className="text-xs text-gray-500 mt-2">Total entries</p>
-            {cycleAnalysis?.variability && (
-              <p className="text-xs text-gray-500 mt-1">
-                Avg: {cycleAnalysis.variability.average} days
-              </p>
-            )}
+            <div>
+              <div className="text-2xl font-bold text-purple-600 mb-1">
+                {cycles.length > 0 ? 'Good' : '-'}
+              </div>
+              {cycleAnalysis?.variability ? (
+                <p className="text-sm text-gray-600">
+                  Avg Cycle: {cycleAnalysis.variability.average} days
+                </p>
+              ) : (
+                <p className="text-sm text-gray-500">Log cycles to track</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -332,7 +279,7 @@ const Dashboard = () => {
             className="btn-primary"
           >
             <Plus className="w-5 h-5" />
-            {showForm ? 'Cancel' : 'Log New Period'}
+            {showForm ? 'Cancel' : 'Log Period'}
           </button>
           <button
             onClick={() => {
@@ -343,7 +290,7 @@ const Dashboard = () => {
             className="btn-secondary"
           >
             <FileText className="w-5 h-5" />
-            {showDailyLog ? 'Cancel' : 'Daily Log'}
+            {showDailyLog ? 'Cancel' : 'Daily Tx'}
           </button>
         </div>
 
@@ -368,10 +315,32 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Cycle List */}
-        <CycleList cycles={cycles} onCycleDeleted={fetchCycles} />
+        {/* Two Column Layout */}
+        <div className="dashboard-layout mb-6">
+          {/* Main Content - Calendar and Insights */}
+          <div className="dashboard-main">
+            {/* Calendar View */}
+            <CalendarView
+              cycles={cycles}
+              fertilityWindow={
+                shouldShowFertilityWindow() ? ovulationWindow : null
+              }
+              onDateClick={(date) => {
+                setSelectedDate(date);
+                setShowDailyLog(true);
+                setShowForm(false);
+              }}
+            />
 
+            {/* Cycle Insights */}
+            <CycleInsights cycles={cycles} />
+          </div>
 
+          {/* Sidebar - Recent Entries */}
+          <div className="dashboard-sidebar">
+            <RecentEntries cycles={cycles} />
+          </div>
+        </div>
 
         {/* Privacy Statement */}
         <div className="mt-6 mb-6 surface p-4 bg-lavender-50/70 border-lavender-200">
